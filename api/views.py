@@ -19,7 +19,7 @@ class PostViewSet(viewsets.ModelViewSet):
         IsAuthorOrReadOnly,
         IsAuthenticatedOrReadOnly
     ]
-    filterset_fields = ['group',] 
+    filterset_fields = ['group',]
     
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
