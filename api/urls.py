@@ -10,10 +10,10 @@ router.register(r'posts', PostViewSet,)
 router.register(
     r'posts/(?P<id>.+)/comments',
     CommentViewSet,
-    basename = 'Comment'
+    basename = 'comment'
 )
 router.register(r'group', GroupViewSet,)
-router.register(r'follow', FollowViewSet, basename = 'Follow')
+router.register(r'follow', FollowViewSet, basename = 'follow')
 
 
 urlpatterns = [
