@@ -1,11 +1,9 @@
 from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, status, viewsets
-from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
-from rest_framework.response import Response
+from rest_framework import filters, viewsets
+from rest_framework.mixins import ListModelMixin, CreateModelMixin
+from rest_framework.permissions import IsAuthenticated
 
-from .models import Comment, Follow, Group, Post, User
+from .models import Group, Post
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (
     CommentSerializer, FollowSerializer, GroupSerializer, PostSerializer
@@ -15,23 +13,23 @@ from .serializers import (
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [
-        IsAuthorOrReadOnly,
-        IsAuthenticatedOrReadOnly
-    ]
-    filterset_fields = ['group',]
-    
+    permission_classes = [IsAuthorOrReadOnly]
+    filterset_fields = ['group']
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
 
-class GroupViewSet(viewsets.ModelViewSet):
+class GroupViewSet(ListModelMixin,
+                   CreateModelMixin,
+                   viewsets.GenericViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(ListModelMixin,
+                    CreateModelMixin,
+                    viewsets.GenericViewSet):
     serializer_class = FollowSerializer
     filter_backends = [filters.SearchFilter]
     permission_classes = [IsAuthenticated]
@@ -43,10 +41,7 @@ class FollowViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [
-        IsAuthorOrReadOnly,
-        IsAuthenticatedOrReadOnly
-    ]
+    permission_classes = [IsAuthorOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
