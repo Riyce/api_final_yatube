@@ -21,16 +21,18 @@ class PostViewSet(ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-class ListCreateAPIViewSet(ListModelMixin, CreateModelMixin, GenericViewSet):
+class ListCreateGenericViewSet(ListModelMixin,
+                               CreateModelMixin,
+                               GenericViewSet):
     pass
 
 
-class GroupViewSet(ListCreateAPIViewSet):
+class GroupViewSet(ListCreateGenericViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 
-class FollowViewSet(ListCreateAPIViewSet):
+class FollowViewSet(ListCreateGenericViewSet):
     serializer_class = FollowSerializer
     filter_backends = [filters.SearchFilter]
     permission_classes = [IsAuthenticated]
