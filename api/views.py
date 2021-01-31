@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import filters
 from rest_framework.mixins import ListModelMixin, CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
-from rest_framework. viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from .models import Group, Post
 from .permissions import IsAuthorOrReadOnly
