@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, viewsets
+from rest_framework import filters
 from rest_framework.mixins import ListModelMixin, CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
+from rest_framework. viewsets import GenericViewSet, ModelViewSet
 
 from .models import Group, Post
 from .permissions import IsAuthorOrReadOnly
@@ -10,7 +11,7 @@ from .serializers import (
 )
 
 
-class PostViewSet(viewsets.ModelViewSet):
+class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthorOrReadOnly]
@@ -20,16 +21,16 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-class GroupViewSet(ListModelMixin,
-                   CreateModelMixin,
-                   viewsets.GenericViewSet):
+class ListCreateAPIViewSet(ListModelMixin, CreateModelMixin, GenericViewSet):
+    pass
+
+
+class GroupViewSet(ListCreateAPIViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 
-class FollowViewSet(ListModelMixin,
-                    CreateModelMixin,
-                    viewsets.GenericViewSet):
+class FollowViewSet(ListCreateAPIViewSet):
     serializer_class = FollowSerializer
     filter_backends = [filters.SearchFilter]
     permission_classes = [IsAuthenticated]
@@ -39,7 +40,7 @@ class FollowViewSet(ListModelMixin,
         return self.request.user.following.all()
 
 
-class CommentViewSet(viewsets.ModelViewSet):
+class CommentViewSet(ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthorOrReadOnly]
 

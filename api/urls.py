@@ -8,7 +8,7 @@ from .views import CommentViewSet, FollowViewSet, GroupViewSet, PostViewSet
 router = DefaultRouter()
 router.register(r'posts', PostViewSet,)
 router.register(
-    r'posts/(?P<id>[0-9])/comments',
+    r'posts/(?P<id>\d)/comments',
     CommentViewSet,
     basename='Comment'
 )
